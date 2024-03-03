@@ -1,28 +1,38 @@
 import { useEffect, useState } from "react";
+import { useTimer } from "react-timer-hook";
+import { createUser, useUser } from "../../services/getUser";
 
 export default function Game() {
+  const { mutate } = createUser();
+  const { data } = useUser();
+
+  console.log(data);
+
   const [newArr, setNewArr] = useState<number[]>([]);
   const [poin, setPoin] = useState(0);
-  const [start, setStart] = useState(false);
+  const [startGame, setStartGame] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [count, setCount] = useState(10);
-  const [name, setName] = useState<string | null>(null);
+  const [name, setName] = useState<string | null>(localStorage.getItem("name"));
   const [shuffledArray, setShuffledArray] = useState(() => {
     const shuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     return shuffled.sort(() => Math.random() - 0.5);
   });
 
-  useEffect(() => {
-    let timer: number;
+  const expiryTimestamp = new Date();
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 180);
 
-    if (start && count > 0) {
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (startGame && count > 0) {
       timer = setInterval(() => setCount(count - 1), 1000);
     }
 
     return () => {
       clearInterval(timer);
     };
-  }, [count, start]);
+  }, [count, startGame]);
 
   const result = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const isCorrectOrder = newArr.every((item, index) => item === result[index]);
@@ -30,6 +40,28 @@ export default function Game() {
   function shuffle() {
     const shuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     setShuffledArray(shuffled.sort(() => Math.random() - 0.5));
+  }
+  function handleStart() {
+    setStartGame(true);
+    setPoin(0);
+    setCount(10);
+    if (minutes === 0 && seconds === 0) {
+      restart(expiryTimestamp);
+    } else {
+      start();
+    }
+  }
+
+  function handleSubmit(event: any) {
+    event.preventDefault();
+    if (event.target.name.value.length === 0) {
+      alert("Please enter your name");
+      return;
+    }
+    setName(event.target.name.value);
+    localStorage.setItem("name", event.target.name.value);
+
+    mutate({ name: event.target.name.value });
   }
 
   function handleNumber(item: number) {
@@ -53,9 +85,7 @@ export default function Game() {
     setNewArr([]);
     shuffle();
     setCount(10);
-  }
-
-  if (!isCorrectOrder) {
+  } else if (!isCorrectOrder) {
     setStatus("wrong order");
     setNewArr([]);
   }
@@ -66,15 +96,21 @@ export default function Game() {
     }, 2000);
   }
 
-  function handleSubmit(event: any) {
-    event.preventDefault();
-    setName(event.target.name.value);
-  }
+  const { seconds, minutes, start, restart } = useTimer({
+    expiryTimestamp,
+    autoStart: false,
+    onExpire: () => {
+      console.warn("expired");
+      if (name) mutate({ name: name, score: poin });
+      setStartGame(false);
+      setCount(0);
+    },
+  });
 
   return (
     <>
       {!name && (
-        <div className="z-[999] fixed flex justify-center items-center h-screen w-full bg-black/80">
+        <div className="z-[999] fixed flex justify-center items-center h-screen w-[480px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80">
           <div className="bg-white h-1/5 p-2 w-5/6 rounded-md">
             <h2>Your Name:</h2>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -99,13 +135,15 @@ export default function Game() {
           <div className="flex justify-center p-2 text-white">Memory Game</div>
           <div className="Profile text-white p-4">
             <div className="border-b-2 border-slate-200">
-              <h2>Name:{name}</h2>
+              <h2>Name: {name}</h2>
               <p className="">Point : {poin}</p>
             </div>
           </div>
           <div className="flex flex-col items-center text-white bg-gray-900">
             <div className="p-10">
-              <h2>Timer : </h2>
+              <h2>
+                Timer : {minutes} minute : {seconds} seconds
+              </h2>
             </div>
             <p className="">{status || "-"}</p>
 
@@ -134,16 +172,16 @@ export default function Game() {
               </button>
             )}
 
-            <div className="flex my-20 flex-col items-center gap-4">
-              {!start ? (
+            <div className="flex my-10 flex-col items-center gap-4">
+              {!startGame ? (
                 <>
                   <button
-                    onClick={() => setStart(true)}
+                    onClick={handleStart}
                     className="bg-green-500 px-4 py-2 rounded-md"
                   >
                     Start
                   </button>
-                  <p>Click start to play</p>
+                  <p>Click Start to play</p>
                 </>
               ) : (
                 <>
@@ -161,12 +199,13 @@ export default function Game() {
                 tabIndex={0}
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Item 2</a>
-                </li>
+                {data?.map((item, index) => (
+                  <li key={item.id}>
+                    <p>
+                      {index + 1}. {item.name} | {item.score}
+                    </p>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
