@@ -21,6 +21,7 @@ interface ContextProps {
   minutes: number;
   seconds: number;
   restart: (expiry: Date) => void;
+  handleFaster: () => void;
 }
 
 const GameContext = createContext<ContextProps | undefined>(undefined);
@@ -96,7 +97,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     (item, index) => item === result[index]
   );
   const expiryTimestamp = new Date();
-  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 20);
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 180);
 
   function shuffle() {
     const shuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -105,6 +106,10 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
       payload: shuffled.sort(() => Math.random() - 0.5),
     });
   }
+
+  const handleFaster = () => {
+    dispatch({ type: "SET_COUNT", payload: 0 });
+  };
 
   function handleNumber(item: number) {
     if (isCorrectOrder) {
@@ -118,7 +123,6 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   function handleStart() {
     dispatch({ type: "START_GAME" });
-
     restart(expiryTimestamp);
   }
 
@@ -156,7 +160,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: "SET_COUNT", payload: 10 });
   }
 
-  if (isCorrectOrder && state.newArr.length === 9) {
+  if (isCorrectOrder && state.newArr.length === result.length) {
     dispatch({ type: "SET_PONIT", payload: state.poin + 1000 });
     dispatch({ type: "SET_NEW_ARR", payload: [] });
     shuffle();
@@ -165,8 +169,6 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: "SET_STATUS", payload: "wrong order" });
     dispatch({ type: "SET_NEW_ARR", payload: [] });
   }
-
-  console.log("a");
 
   return (
     <GameContext.Provider
@@ -183,6 +185,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
         seconds,
         start,
         restart,
+        handleFaster,
       }}
     >
       {children}

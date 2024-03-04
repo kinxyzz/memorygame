@@ -11,9 +11,14 @@ export default function Game() {
     handleStart,
     minutes,
     seconds,
+    dispatch,
   } = useGame();
 
   const { data } = useUser();
+
+  const handleFaster = () => {
+    dispatch({ type: "SET_COUNT", payload: 0 });
+  };
 
   return (
     <>
@@ -74,7 +79,7 @@ export default function Game() {
             {state.count === 0 && (
               <button
                 onClick={handleReshuffle}
-                className="mt-10 bg-blue-500 p-1 px-3 rounded-md"
+                className="mt-10 bg-blue-500 py-2 px-4 rounded-md"
               >
                 Reshuffle
               </button>
@@ -93,7 +98,13 @@ export default function Game() {
                 </>
               ) : (
                 <>
-                  <p>{state.count}</p>
+                  <button
+                    disabled={state.count === 0 ? true : false}
+                    onClick={handleFaster}
+                    className="py-2 px-4 bg-blue-500 rounded-md"
+                  >
+                    Faster {state.count}
+                  </button>
                 </>
               )}
             </div>
@@ -117,6 +128,9 @@ export default function Game() {
               </ul>
             </div>
           </div>
+          <footer>
+            <p className="mt-10 text-white text-center">@kinxyzz</p>
+          </footer>
         </div>
       </div>
     </>
