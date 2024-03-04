@@ -67,7 +67,7 @@ function reducer(state: State, action: Action) {
         startGame: false,
         status: "Game Over",
         poin: 0,
-        count: 0,
+        count: 10,
       };
     default:
       throw new Error();
@@ -96,7 +96,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     (item, index) => item === result[index]
   );
   const expiryTimestamp = new Date();
-  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 120);
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 20);
 
   function shuffle() {
     const shuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9];
