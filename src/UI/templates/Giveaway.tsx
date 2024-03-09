@@ -54,16 +54,18 @@ export default function Giveaway() {
         <button onClick={handleSubmit} className="btn btn-primary">
           Submit
         </button>
-        <p>
-          thanks to pxndameong and{" "}
-          <a
-            className="text-green-500"
-            href="https://www.youtube.com/@RizallAE"
-          >
-            Rizall AE
-          </a>{" "}
-          for giveaway
-        </p>
+        <div>
+          <p className="text-sm text-center">
+            thanks to pxndameong and{" "}
+            <a
+              className="text-green-500"
+              href="https://www.youtube.com/@RizallAE"
+            >
+              Rizall AE
+            </a>{" "}
+            for giveaway
+          </p>
+        </div>
       </div>
     </div>
   );
