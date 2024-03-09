@@ -20,8 +20,8 @@ export default function Giveaway() {
 
   return (
     <div className="h-screen bg-slate-900 text-white">
-      <div className="flex flex-col items-center h-full gap-4 bg-slate-800 pt-20">
-        <div className="p-2 border-slate-100 border h-2/4 overflow-y-scroll">
+      <div className="flex flex-col items-center h-full gap-4 bg-slate-800 pt-20 md:pt-10">
+        <div className="p-2 border-slate-100 border h-1/4 overflow-y-scroll">
           <h1 className="text-3xl  scroll-m-0">List Participants</h1>
           <ul className="mt-4">
             {data?.map((participant, index) => (
