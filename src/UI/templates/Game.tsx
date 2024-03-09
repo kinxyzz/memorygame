@@ -11,14 +11,10 @@ export default function Game() {
     handleStart,
     minutes,
     seconds,
-    dispatch,
+    handleFaster,
   } = useGame();
 
   const { data } = useUser();
-
-  const handleFaster = () => {
-    dispatch({ type: "SET_COUNT", payload: 0 });
-  };
 
   return (
     <>
@@ -43,8 +39,8 @@ export default function Game() {
           </div>
         </div>
       )}
-      <div className="flex justify-center bg-red-900 h-screen">
-        <div className="bg-gray-900 w-[480px] container">
+      <div className="flex justify-center bg-gray-900  h-screen">
+        <div className="w-[480px] container">
           <div className="flex justify-center p-2 text-white">Memory Game</div>
           <div className="Profile text-white p-4">
             <div className="border-b-2 border-slate-200">
@@ -60,7 +56,11 @@ export default function Game() {
             </div>
             <p className="">{state.status || "-"}</p>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div
+              className={`grid ${
+                state.poin > 4000 ? "grid-cols-4" : "grid-cols-3"
+              }  gap-4`}
+            >
               {state.shuffledArray.map((item) => (
                 <button
                   key={item}
@@ -98,13 +98,15 @@ export default function Game() {
                 </>
               ) : (
                 <>
-                  <button
-                    disabled={state.count === 0 ? true : false}
-                    onClick={handleFaster}
-                    className="py-2 px-4 bg-blue-500 rounded-md"
-                  >
-                    Faster {state.count}
-                  </button>
+                  {state.count !== 0 && (
+                    <button
+                      disabled={state.count === 0 ? true : false}
+                      onClick={handleFaster}
+                      className="py-2 px-4 bg-blue-500 rounded-md"
+                    >
+                      Faster {state.count}
+                    </button>
+                  )}
                 </>
               )}
             </div>

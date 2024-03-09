@@ -1,28 +1,7 @@
-import React, {
-  Dispatch,
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-} from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { useTimer } from "react-timer-hook";
 import { createUser } from "../services/getUser";
-import { Action, State } from "../utils/interface";
-interface ContextProps {
-  state: State;
-  dispatch: Dispatch<Action>;
-  shuffle: () => void;
-  isCorrectOrder: boolean;
-  handleNumber: (item: number) => void;
-  handleReshuffle: () => void;
-  handleSubmit: (event: any) => void;
-  handleStart: () => void;
-  start: () => void;
-  minutes: number;
-  seconds: number;
-  restart: (expiry: Date) => void;
-  handleFaster: () => void;
-}
+import { Action, ContextProps, State } from "../utils/interface";
 
 const GameContext = createContext<ContextProps | undefined>(undefined);
 
@@ -41,7 +20,7 @@ const initialState: State = {
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case "START_GAME":
-      return { ...state, startGame: true, poin: 0, count: 10 };
+      return { ...state, startGame: true, poin: 0, count: 30 };
     case "SET_NAME":
       return { ...state, name: action.payload };
     case "SET_NEW_ARR":
@@ -92,15 +71,27 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [state.count, state.startGame]);
 
-  const result = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let result =
+    state.poin > 4000
+      ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      : [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
   const isCorrectOrder = state.newArr.every(
     (item, index) => item === result[index]
   );
   const expiryTimestamp = new Date();
-  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 180);
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 240);
 
+  let shuffled =
+    state.poin >= 4000
+      ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      : [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  console.log(state.shuffledArray);
+  console.log(shuffled);
+
+  console.log(shuffled);
   function shuffle() {
-    const shuffled = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     dispatch({
       type: "SET_SHUFFLED_ARRAY",
       payload: shuffled.sort(() => Math.random() - 0.5),
@@ -113,23 +104,12 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   function handleNumber(item: number) {
     if (isCorrectOrder) {
-      if (state.newArr.length < 9) {
+      if (state.newArr.length < result.length) {
         dispatch({ type: "SET_NEW_ARR", payload: [...state.newArr, item] });
       } else {
         dispatch({ type: "SET_STATUS", payload: "good" });
       }
     }
-  }
-
-  function handleStart() {
-    dispatch({ type: "START_GAME" });
-    restart(expiryTimestamp);
-  }
-
-  if (state.status) {
-    setTimeout(() => {
-      dispatch({ type: "SET_STATUS", payload: null });
-    }, 2000);
   }
 
   const { seconds, minutes, start, restart } = useTimer({
@@ -141,6 +121,19 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch({ type: "SET_EXPIRED" });
     },
   });
+
+  function handleStart() {
+    dispatch({ type: "START_GAME" });
+    shuffle();
+
+    restart(expiryTimestamp);
+  }
+
+  if (state.status) {
+    setTimeout(() => {
+      dispatch({ type: "SET_STATUS", payload: null });
+    }, 2000);
+  }
 
   function handleSubmit(event: any) {
     event.preventDefault();
@@ -164,7 +157,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: "SET_PONIT", payload: state.poin + 1000 });
     dispatch({ type: "SET_NEW_ARR", payload: [] });
     shuffle();
-    dispatch({ type: "SET_COUNT", payload: 10 });
+    dispatch({ type: "SET_COUNT", payload: 30 });
   } else if (!isCorrectOrder) {
     dispatch({ type: "SET_STATUS", payload: "wrong order" });
     dispatch({ type: "SET_NEW_ARR", payload: [] });

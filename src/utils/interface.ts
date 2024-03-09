@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+
 export interface State {
   newArr: number[];
   poin: number;
@@ -21,3 +23,19 @@ export type Action =
   | { type: "SET_TIMER"; payload: { seconds: number; minutes: number } }
   | { type: "RESET_GAME" }
   | { type: "SET_EXPIRED" };
+
+export interface ContextProps {
+  state: State;
+  dispatch: Dispatch<Action>;
+  shuffle: () => void;
+  isCorrectOrder: boolean;
+  handleNumber: (item: number) => void;
+  handleReshuffle: () => void;
+  handleSubmit: (event: any) => void;
+  handleStart: () => void;
+  start: () => void;
+  minutes: number;
+  seconds: number;
+  restart: (expiry: Date) => void;
+  handleFaster: () => void;
+}

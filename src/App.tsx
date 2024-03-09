@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Game from "./UI/templates/Game";
+import Giveaway from "./UI/templates/Giveaway";
 import { GameProvider } from "./context/GameContext";
 
 function App() {
@@ -10,9 +12,12 @@ function App() {
 
     <QueryClientProvider client={queryClient}>
       <GameProvider>
-        <div className="overflow-hidden">
-          <Game />
-        </div>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Game />} key="game" />
+            <Route path="/giveaway" element={<Giveaway />} key="game" />
+          </Routes>
+        </BrowserRouter>
       </GameProvider>
     </QueryClientProvider>
   );
