@@ -58,7 +58,7 @@ export default function Game() {
 
             <div
               className={`grid ${
-                state.poin > 4000 ? "grid-cols-4" : "grid-cols-3"
+                state.shuffledArray.length > 9 ? "grid-cols-4" : "grid-cols-3"
               }  gap-4`}
             >
               {state.shuffledArray.map((item) => (
@@ -66,13 +66,15 @@ export default function Game() {
                   key={item}
                   onClick={() => handleNumber(item)}
                   disabled={state.count === 0 ? false : true}
-                  className={`w-20 h-20 rounded-md ${
+                  className={`w-20 h-20 rounded-md drop-shadow-lg ${
                     state.newArr.includes(item) && isCorrectOrder
                       ? "bg-green-500"
+                      : state.count !== 0
+                      ? "bg-cyan-800 cursor-not-allowed"
                       : "bg-cyan-500"
                   }`}
                 >
-                  {state.count === 0 ? "?" : item}
+                  {state.count === 0 ? item : item}
                 </button>
               ))}
             </div>

@@ -12,7 +12,7 @@ const initialState: State = {
   status: null,
   count: 10,
   name: localStorage.getItem("name"),
-  shuffledArray: [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5),
+  shuffledArray: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   seconds: 0,
   minutes: 0,
 };
@@ -20,7 +20,12 @@ const initialState: State = {
 function reducer(state: State, action: Action) {
   switch (action.type) {
     case "START_GAME":
-      return { ...state, startGame: true, poin: 0, count: 30 };
+      return {
+        ...state,
+        startGame: true,
+        poin: 3000,
+        count: 10,
+      };
     case "SET_NAME":
       return { ...state, name: action.payload };
     case "SET_NEW_ARR":
@@ -41,14 +46,16 @@ function reducer(state: State, action: Action) {
       };
     case "RESET_GAME":
       return initialState;
-    case "SET_EXPIRED":
+    case "SET_COMPLETE":
       return {
         ...state,
-        startGame: false,
-        status: "Game Over",
-        poin: 0,
-        count: 10,
+        poin: state.poin >= 4000 ? state.poin + 4000 : state.poin + 1000,
+        newArr: [],
+        count: 30,
       };
+    case "SET_RESHUFFLE":
+      return { ...state, newArr: [], count: 30 };
+
     default:
       throw new Error();
   }
@@ -58,6 +65,13 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { mutate } = createUser();
 
+  //handleScore 4000 agar langsung shuffle
+  useEffect(() => {
+    if (state.poin === 4000) {
+      shuffle();
+    }
+  }, [state.poin]);
+
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     if (state.startGame && state.count > 0) {
@@ -65,14 +79,14 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
         dispatch({ type: "SET_COUNT", payload: state.count - 1 });
       }, 1000);
     }
-
+    state.shuffledArray;
     return () => {
       clearInterval(timer);
     };
-  }, [state.count, state.startGame]);
+  }, [state.count, state.startGame, state.shuffledArray]);
 
   let result =
-    state.poin > 4000
+    state.shuffledArray.length === 12
       ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       : [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -80,21 +94,19 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     (item, index) => item === result[index]
   );
   const expiryTimestamp = new Date();
-  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 240);
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 20);
 
-  let shuffled =
-    state.poin >= 4000
-      ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-      : [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  console.log(state.shuffledArray);
-  console.log(shuffled);
-
-  console.log(shuffled);
   function shuffle() {
+    let nextShuffled =
+      state.poin >= 4000
+        ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(
+            () => Math.random() - 0.5
+          )
+        : state.shuffledArray.sort(() => Math.random() - 0.5);
+
     dispatch({
       type: "SET_SHUFFLED_ARRAY",
-      payload: shuffled.sort(() => Math.random() - 0.5),
+      payload: nextShuffled,
     });
   }
 
@@ -118,7 +130,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     onExpire: () => {
       console.warn("expired");
       if (state.name) mutate({ name: state.name, score: state.poin });
-      dispatch({ type: "SET_EXPIRED" });
+      dispatch({ type: "RESET_GAME" });
     },
   });
 
@@ -148,18 +160,15 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   function handleReshuffle() {
-    dispatch({ type: "SET_NEW_ARR", payload: [] });
+    dispatch({ type: "SET_RESHUFFLE" });
     shuffle();
-    dispatch({ type: "SET_COUNT", payload: 10 });
   }
 
   if (isCorrectOrder && state.newArr.length === result.length) {
-    dispatch({ type: "SET_PONIT", payload: state.poin + 1000 });
-    dispatch({ type: "SET_NEW_ARR", payload: [] });
     shuffle();
-    dispatch({ type: "SET_COUNT", payload: 30 });
+    dispatch({ type: "SET_COMPLETE" });
   } else if (!isCorrectOrder) {
-    dispatch({ type: "SET_STATUS", payload: "wrong order" });
+    dispatch({ type: "SET_STATUS", payload: "Wrong Order" });
     dispatch({ type: "SET_NEW_ARR", payload: [] });
   }
 

@@ -22,7 +22,8 @@ export type Action =
   | { type: "SET_STATUS"; payload: string | null }
   | { type: "SET_TIMER"; payload: { seconds: number; minutes: number } }
   | { type: "RESET_GAME" }
-  | { type: "SET_EXPIRED" };
+  | { type: "SET_EXPIRED" }
+  | { type: "SET_COMPLETE" };
 
 export interface ContextProps {
   state: State;
