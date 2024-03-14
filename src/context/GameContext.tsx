@@ -94,7 +94,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     (item, index) => item === result[index]
   );
   const expiryTimestamp = new Date();
-  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 20);
+  expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 180);
 
   function shuffle() {
     let nextShuffled =

@@ -74,7 +74,7 @@ export default function Game() {
                       : "bg-cyan-500"
                   }`}
                 >
-                  {state.count === 0 ? item : item}
+                  {state.count === 0 ? "❓❓" : item}
                 </button>
               ))}
             </div>
