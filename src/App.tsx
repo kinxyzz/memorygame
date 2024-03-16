@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Dashboard from "./UI/templates/Dashboard";
 import Game from "./UI/templates/Game";
 import Giveaway from "./UI/templates/Giveaway";
 import { GameProvider } from "./context/GameContext";
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Game />} key="game" />
             <Route path="/giveaway" element={<Giveaway />} key="game" />
+            <Route path="/dashboard" element={<Dashboard />} key="dashboard" />
           </Routes>
         </BrowserRouter>
       </GameProvider>
