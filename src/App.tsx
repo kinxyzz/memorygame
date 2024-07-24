@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./UI/templates/Dashboard";
 import Game from "./UI/templates/Game";
 import Giveaway from "./UI/templates/Giveaway";
+import JudTest from "./UI/templates/JudTest";
 import { GameProvider } from "./context/GameContext";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Game />} key="game" />
             <Route path="/giveaway" element={<Giveaway />} key="game" />
             <Route path="/dashboard" element={<Dashboard />} key="dashboard" />
+            <Route path="/testing" element={<JudTest />} key="dashboard" />
           </Routes>
         </BrowserRouter>
       </GameProvider>

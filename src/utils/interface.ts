@@ -8,8 +8,8 @@ export interface State {
   count: number;
   name: string | null;
   shuffledArray: number[];
-  seconds: number;
-  minutes: number;
+  time: number;
+  isActive: boolean;
 }
 
 export type Action =
@@ -20,11 +20,15 @@ export type Action =
   | { type: "SET_COUNT"; payload: number }
   | { type: "SET_PONIT"; payload: number }
   | { type: "SET_STATUS"; payload: string | null }
-  | { type: "SET_TIMER"; payload: { seconds: number; minutes: number } }
+  | { type: "SET_TIMER"; payload: { time: number } }
   | { type: "RESET_GAME" }
   | { type: "SET_EXPIRED" }
   | { type: "SET_COMPLETE" }
-  | { type: "SET_RESHUFFLE" };
+  | { type: "SET_RESHUFFLE" }
+  | {
+      type: "SET_ACTIVE";
+      payload: { isActive: boolean };
+    };
 
 export interface ContextProps {
   state: State;
@@ -35,9 +39,6 @@ export interface ContextProps {
   handleReshuffle: () => void;
   handleSubmit: (event: any) => void;
   handleStart: () => void;
-  start: () => void;
-  minutes: number;
-  seconds: number;
-  restart: (expiry: Date) => void;
+
   handleFaster: () => void;
 }

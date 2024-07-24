@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { useTimer } from "react-timer-hook";
 import { createUser } from "../services/getUser";
 import { Action, ContextProps, State } from "../utils/interface";
 
@@ -13,8 +12,8 @@ const initialState: State = {
   count: 10,
   name: localStorage.getItem("name"),
   shuffledArray: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  seconds: 0,
-  minutes: 0,
+  time: 180,
+  isActive: false,
 };
 
 function reducer(state: State, action: Action) {
@@ -23,8 +22,9 @@ function reducer(state: State, action: Action) {
       return {
         ...state,
         startGame: true,
-        poin: 3000,
+        poin: 0,
         count: 10,
+        time: 180,
       };
     case "SET_NAME":
       return { ...state, name: action.payload };
@@ -41,8 +41,7 @@ function reducer(state: State, action: Action) {
     case "SET_TIMER":
       return {
         ...state,
-        seconds: action.payload.seconds,
-        minutes: action.payload.minutes,
+        time: action.payload.time,
       };
     case "RESET_GAME":
       return initialState;
@@ -55,7 +54,8 @@ function reducer(state: State, action: Action) {
       };
     case "SET_RESHUFFLE":
       return { ...state, newArr: [], count: 30 };
-
+    case "SET_ACTIVE":
+      return { ...state, isActive: action.payload.isActive };
     default:
       throw new Error();
   }
@@ -73,19 +73,26 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }, [state.poin]);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (state.startGame && state.count > 0) {
-      timer = setInterval(() => {
-        dispatch({ type: "SET_COUNT", payload: state.count - 1 });
-      }, 1000);
-    }
-    state.shuffledArray;
-    return () => {
-      clearInterval(timer);
-    };
-  }, [state.count, state.startGame, state.shuffledArray]);
+    let interval = null;
 
-  let result =
+    if (state.isActive && state.time > 0) {
+      interval = setInterval(() => {
+        dispatch({ type: "SET_TIMER", payload: { time: state.time - 1 } });
+      }, 1000);
+    } else if (state.time === 0) {
+      alert("Time's up!");
+      dispatch({ type: "SET_ACTIVE", payload: { isActive: false } });
+      mutate({ name: state.name!, score: state.poin });
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [state.isActive, state.time]);
+
+  const result =
     state.shuffledArray.length === 12
       ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       : [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -97,7 +104,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   expiryTimestamp.setSeconds(expiryTimestamp.getSeconds() + 180);
 
   function shuffle() {
-    let nextShuffled =
+    const nextShuffled =
       state.poin >= 4000
         ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].sort(
             () => Math.random() - 0.5
@@ -124,21 +131,10 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
 
-  const { seconds, minutes, start, restart } = useTimer({
-    expiryTimestamp,
-    autoStart: false,
-    onExpire: () => {
-      console.warn("expired");
-      if (state.name) mutate({ name: state.name, score: state.poin });
-      dispatch({ type: "RESET_GAME" });
-    },
-  });
-
   function handleStart() {
     dispatch({ type: "START_GAME" });
     shuffle();
-
-    restart(expiryTimestamp);
+    dispatch({ type: "SET_ACTIVE", payload: { isActive: true } });
   }
 
   if (state.status) {
@@ -146,17 +142,22 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
       dispatch({ type: "SET_STATUS", payload: null });
     }, 2000);
   }
-
-  function handleSubmit(event: any) {
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (event.target.name.value.length === 0) {
+
+    const target = event.target as typeof event.target & {
+      name: { value: string };
+    };
+
+    if (target.name.value.length === 0) {
       alert("Please enter your name");
       return;
     }
-    dispatch({ type: "SET_NAME", payload: event.target.name.value });
-    localStorage.setItem("name", event.target.name.value);
 
-    mutate({ name: event.target.name.value });
+    dispatch({ type: "SET_NAME", payload: target.name.value });
+    localStorage.setItem("name", target.name.value);
+
+    mutate({ name: target.name.value });
   }
 
   function handleReshuffle() {
@@ -183,10 +184,6 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
         handleReshuffle,
         handleSubmit,
         handleStart,
-        minutes,
-        seconds,
-        start,
-        restart,
         handleFaster,
       }}
     >
