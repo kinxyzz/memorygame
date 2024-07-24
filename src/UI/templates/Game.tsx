@@ -121,13 +121,19 @@ export default function Game() {
               </div>
             </div>
           ) : (
-            <div className="w-full flex items-center justify-center">
+            <div className="w-full flex-col text-white gap-2 flex items-center justify-center">
+              <ul className="max-w-xs text-center">
+                <li>
+                  Jika anda Bermain Lagi, maka score anda saat ini akan diganti
+                  ke yang baru meski skor saat ini lebih tinggi
+                </li>
+              </ul>
               <button
                 disabled={state.count === 0 ? true : false}
                 onClick={handleStart}
                 className="py-2 px-4 bg-green-500 text-white mx-auto rounded-md"
               >
-                Want To Play Again?
+                Mau Main Lagi?
               </button>
             </div>
           )}
@@ -157,8 +163,13 @@ export default function Game() {
               </ul>
             </div>
           </div>
-          <footer>
-            <p className="mt-10 text-white text-center">@kinxyzz</p>
+          <footer className="w-full flex justify-center">
+            <a
+              href="https://www.tiktok.com/@alshopme"
+              className="mt-10 text-white text-center"
+            >
+              @kinxyzz
+            </a>
           </footer>
         </div>
       </div>

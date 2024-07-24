@@ -73,10 +73,10 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   }, [state.poin]);
 
   useEffect(() => {
-    let interval = null;
+    let interval: number | null = null;
 
     if (state.isActive && state.time > 0) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         dispatch({ type: "SET_TIMER", payload: { time: state.time - 1 } });
       }, 1000);
     } else if (state.time === 0) {
@@ -86,8 +86,8 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return () => {
-      if (interval) {
-        clearInterval(interval);
+      if (interval !== null) {
+        window.clearInterval(interval);
       }
     };
   }, [state.isActive, state.time]);
