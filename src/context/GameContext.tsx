@@ -74,7 +74,7 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     let interval: number | null = null;
-
+    dispatch({ type: "SET_COUNT", payload: state.count - 1 });
     if (state.isActive && state.time > 0) {
       interval = window.setInterval(() => {
         dispatch({ type: "SET_TIMER", payload: { time: state.time - 1 } });

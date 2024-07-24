@@ -73,7 +73,7 @@ export default function Game() {
                     key={item}
                     onClick={() => handleNumber(item)}
                     disabled={state.count === 0 ? false : true}
-                    className={`w-14 h-14 rounded-md drop-shadow-lg ${
+                    className={`w-16 h-16 rounded-md drop-shadow-lg ${
                       state.newArr.includes(item) && isCorrectOrder
                         ? "bg-green-500"
                         : state.count !== 0
@@ -89,18 +89,18 @@ export default function Game() {
               {state.count === 0 && (
                 <button
                   onClick={handleReshuffle}
-                  className="mt-10 btn btn-sm btn-primary btn-square text-white"
+                  className="mt-10 btn btn-wide  btn-primary btn-square text-white"
                 >
                   Reshuffle
                 </button>
               )}
 
-              <div className="flex my-10 flex-col items-center gap-4">
+              <div className="flex my-10 mx-4 flex-col items-center gap-4">
                 {!state.startGame ? (
                   <>
                     <button
                       onClick={handleStart}
-                      className="btn btn-sm btn-primary text-white"
+                      className="btn btn-wide  btn-primary text-white"
                     >
                       Start
                     </button>
@@ -112,7 +112,7 @@ export default function Game() {
                       <button
                         disabled={state.count === 0 ? true : false}
                         onClick={handleFaster}
-                        className="btn btn-sm btn-primary btn-square text-white"
+                        className="btn btn-wide btn-primary btn-square text-white"
                       >
                         Faster {state.count}
                       </button>
