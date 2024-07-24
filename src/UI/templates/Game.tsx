@@ -26,7 +26,7 @@ export default function Game() {
   return (
     <>
       {!state.name && (
-        <div className="z-[999] fixed flex justify-center items-center  w-[480px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80">
+        <div className="z-[999] fixed flex justify-center min-h-screen items-center  w-[480px] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/80">
           <div className="bg-white  p-4 rounded-md">
             <h2>Your Name:</h2>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -49,11 +49,12 @@ export default function Game() {
       <div className="flex justify-center bg-gray-800 min-h-screen">
         <div className="w-[480px] container">
           <div className="flex justify-center p-2 text-white">Memory Game</div>
-          <div className="Profile text-white p-4">
-            <div className="border-b-2 border-slate-200">
+          <div className="Profile text-white p-4 justify-between border-b-2 flex w-full">
+            <div className=" border-slate-200">
               <h2>Name: {state.name}</h2>
               <p className="">Point : {state.poin}</p>
             </div>
+            <p className="btn btn-sm">Sponsor? dm</p>
           </div>
           {state.time > 0 ? (
             <div className="flex flex-col items-center text-white">
@@ -72,7 +73,7 @@ export default function Game() {
                     key={item}
                     onClick={() => handleNumber(item)}
                     disabled={state.count === 0 ? false : true}
-                    className={`w-20 h-20 rounded-md drop-shadow-lg ${
+                    className={`w-14 h-14 rounded-md drop-shadow-lg ${
                       state.newArr.includes(item) && isCorrectOrder
                         ? "bg-green-500"
                         : state.count !== 0
@@ -88,7 +89,7 @@ export default function Game() {
               {state.count === 0 && (
                 <button
                   onClick={handleReshuffle}
-                  className="mt-10 btn btn-primary btn-square btn-wide text-white"
+                  className="mt-10 btn btn-sm btn-primary btn-square text-white"
                 >
                   Reshuffle
                 </button>
@@ -99,11 +100,11 @@ export default function Game() {
                   <>
                     <button
                       onClick={handleStart}
-                      className="btn-circle btn-wide btn btn-primary text-white"
+                      className="btn btn-sm btn-primary text-white"
                     >
                       Start
                     </button>
-                    <p>Click Start to play</p>
+                    <p className="text-sm">Click Start to play</p>
                   </>
                 ) : (
                   <>
@@ -111,7 +112,7 @@ export default function Game() {
                       <button
                         disabled={state.count === 0 ? true : false}
                         onClick={handleFaster}
-                        className="btn btn-primary btn-wide btn-square text-white"
+                        className="btn btn-sm btn-primary btn-square text-white"
                       >
                         Faster {state.count}
                       </button>
@@ -140,10 +141,10 @@ export default function Game() {
           <div className="p-4">
             <div
               className={`dropdown ${
-                state.isActive ? "dropdown-top" : "dropdown-bottom"
+                !state.isActive ? "dropdown-top" : "dropdown-bottom"
               }`}
             >
-              <div tabIndex={0} role="button" className="btn m-1">
+              <div tabIndex={0} role="button" className="btn btn-sm m-1">
                 Leaderboard
               </div>
               <ul
