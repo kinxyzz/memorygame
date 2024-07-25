@@ -83,7 +83,7 @@ export default function Game() {
                         : "bg-gradient-to-tr from-purple-600 to-pink-500"
                     }`}
                   >
-                    {state.count === 0 ? item : item}
+                    {state.count === 0 ? "?" : item}
                   </button>
                 ))}
               </div>
