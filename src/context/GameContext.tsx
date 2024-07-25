@@ -25,6 +25,7 @@ function reducer(state: State, action: Action) {
         poin: 0,
         count: 10,
         time: 180,
+        newArr: [],
       };
     case "SET_NAME":
       return { ...state, name: action.payload };
@@ -65,7 +66,6 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { mutate } = createUser();
 
-  //handleScore 4000 agar langsung shuffle
   useEffect(() => {
     if (state.poin === 4000) {
       shuffle();
@@ -74,7 +74,9 @@ const GameProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     let interval: number | null = null;
-    dispatch({ type: "SET_COUNT", payload: state.count - 1 });
+    if (state.count > 0) {
+      dispatch({ type: "SET_COUNT", payload: state.count - 1 });
+    }
     if (state.isActive && state.time > 0) {
       interval = window.setInterval(() => {
         dispatch({ type: "SET_TIMER", payload: { time: state.time - 1 } });

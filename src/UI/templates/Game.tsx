@@ -77,11 +77,11 @@ export default function Game() {
                       state.newArr.includes(item) && isCorrectOrder
                         ? "bg-green-500"
                         : state.count !== 0
-                        ? "bg-primary/70 cursor-not-allowed"
-                        : "bg-primary"
+                        ? "bg-gradient-to-tr from-purple-800 to-pink-900"
+                        : "bg-gradient-to-tr from-purple-600 to-pink-500"
                     }`}
                   >
-                    {state.count === 0 ? "?" : item}
+                    {state.count === 0 ? item : item}
                   </button>
                 ))}
               </div>
@@ -89,7 +89,7 @@ export default function Game() {
               {state.count === 0 && (
                 <button
                   onClick={handleReshuffle}
-                  className="mt-10 btn btn-wide  btn-primary btn-square text-white"
+                  className="mt-10 btn btn-wide  bg-gradient-to-tr from-purple-600 to-pink-500 btn-square text-white"
                 >
                   Reshuffle
                 </button>
@@ -100,7 +100,7 @@ export default function Game() {
                   <>
                     <button
                       onClick={handleStart}
-                      className="btn btn-wide  btn-primary text-white"
+                      className="btn btn-wide  bg-gradient-to-tr from-purple-600 to-pink-500 text-white"
                     >
                       Start
                     </button>
@@ -112,7 +112,7 @@ export default function Game() {
                       <button
                         disabled={state.count === 0 ? true : false}
                         onClick={handleFaster}
-                        className="btn btn-wide btn-primary btn-square text-white"
+                        className="btn btn-wide bg-gradient-to-tr from-purple-600 to-pink-500 btn-square text-white"
                       >
                         Faster {state.count}
                       </button>
@@ -130,7 +130,6 @@ export default function Game() {
                 </li>
               </ul>
               <button
-                disabled={state.count === 0 ? true : false}
                 onClick={handleStart}
                 className="py-2 px-4 bg-green-500 text-white mx-auto rounded-md"
               >
