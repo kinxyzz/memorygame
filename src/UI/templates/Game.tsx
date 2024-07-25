@@ -55,7 +55,6 @@ export default function Game() {
               <h2>Name: {state.name}</h2>
               <p className="">Point : {state.poin}</p>
             </div>
-            <p className="btn btn-sm">Sponsor? dm</p>
           </div>
 
           {state.time > 0 ? (
@@ -165,33 +164,6 @@ export default function Game() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div
-              className={`dropdown ${
-                !state.isActive ? "dropdown-left" : "dropdown-bottom"
-              }`}
-            >
-              <div tabIndex={0} role="button" className="btn btn-sm m-1">
-                Sponsor
-              </div>
-              <ol
-                tabIndex={0}
-                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                {/* {data?.map((item, index) => (
-                  <li key={item.id}>
-                    <a
-                      className="w-full flex justify-between px-1"
-                      href={`https://www.tiktok.com/@${item.name}`}
-                      target="_blank"
-                    >
-                      {index + 1}. {item.name} | {item.score}{" "}
-                      <FaTiktok color="black" />
-                    </a>
-                  </li>
-                ))} */}
-                <li>Currently nothing sponsor</li>
-              </ol>
             </div>
           </div>
           <footer className="w-full flex justify-center">
